@@ -1,3 +1,3 @@
-SOLACE
+# Solace
 
-# Solace — Recover your Safe for free 😮‍💨
+Recover your Safe for free 😮‍💨
