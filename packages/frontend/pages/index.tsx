@@ -2,7 +2,6 @@ import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk";
 
 export default function Home() {
   const { connected, safe} = useSafeAppsSDK();
-  console.log(safe);
 
   return (
     <>
