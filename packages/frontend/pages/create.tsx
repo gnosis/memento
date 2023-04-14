@@ -1,19 +1,16 @@
-import { useSafeAppsSDK } from "@safe-global/safe-apps-react-sdk";
 import { useForm, useFieldArray } from "react-hook-form";
-import { PlusIcon, TrashIcon } from "@heroicons/react/20/solid";
+import { TrashIcon } from "@heroicons/react/20/solid";
 
 export default function Home() {
-  const { connected, safe } = useSafeAppsSDK();
   const { control, register, handleSubmit, watch } = useForm({
     defaultValues: {
       recoverycodes: [{ value: "" }, { value: "" }, { value: "" }],
     },
   });
   const onSubmit = (data: any) => console.log(data);
-  const recoverycode = watch("recoverycodes");
   const { fields, append, remove } = useFieldArray({
-    control, // control props comes from useForm (optional: if you are using FormContext)
-    name: "recoverycodes", // unique name for your Field Array
+    control,
+    name: "recoverycodes",
   });
 
   return (
@@ -23,8 +20,6 @@ export default function Home() {
           <form className="mt-8 space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <h2>Setup your recovery codes</h2>
             {fields.map((field, index) => {
-              const isEmpty = recoverycode[index].value === "";
-              const isLast = fields.length === index + 1;
               const isOnly = fields.length === 1;
               return (
                 <div key={field.id} className="flex gap-4">
