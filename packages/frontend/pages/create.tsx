@@ -5,8 +5,13 @@ export default function Home() {
   const { control, register, handleSubmit, watch } = useForm({
     defaultValues: {
       recoverycodes: [{ value: "" }, { value: "" }, { value: "" }],
+      quorum: 2,
+      delayValue: 2,
+      delayUnit: "days",
     },
   });
+  const delayValue = watch("delayValue");
+  const delayPlural = delayValue > 1;
   const onSubmit = (data: any) => console.log(data);
   const { fields, append, remove } = useFieldArray({
     control,
@@ -16,7 +21,7 @@ export default function Home() {
   return (
     <>
       <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-        <div className="w-full max-w-md space-y-8">
+        <div className="w-full max-w-lg space-y-8">
           <form className="mt-8 space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <h2>Setup your recovery codes</h2>
             {fields.map((field, index) => {
@@ -39,6 +44,46 @@ export default function Home() {
                 </div>
               );
             })}
+            <div className="flex items-center gap-1">
+              <input
+                {...register("quorum", {
+                  valueAsNumber: true,
+                  required: true,
+                  min: 1,
+                  max: fields.length,
+                })}
+                type="number"
+                className="block rounded-md w-16 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                placeholder="n"
+              />
+              <span>
+                out of {fields.length} are required to recover the account
+              </span>
+            </div>
+            <div className="flex items-center gap-1">
+              <input
+                {...register("delayValue", {
+                  valueAsNumber: true,
+                  required: true,
+                  min: 1,
+                })}
+                type="number"
+                className="block rounded-md w-16 border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                placeholder="n"
+              />
+              <select
+                {...register("delayUnit", { required: true })}
+                className="block rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              >
+                <option value="weeks">{delayPlural ? "Weeks" : "Week"}</option>
+                <option value="days">{delayPlural ? "Days" : "Day"}</option>
+                <option value="hours">{delayPlural ? "Hours" : "Hour"}</option>
+                <option value="seconds">{delayPlural ? "Seconds" : "Second"}</option>
+              </select>
+              <span>
+                delay before the recovery is executed
+              </span>
+            </div>
             <div className="flex gap-2">
               <button
                 className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
