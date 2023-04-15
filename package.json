@@ -1,0 +1,15 @@
+{
+ "name": "tbd",
+ "version": "1.0.0",
+ "main": "index.js",
+ "license": "MIT",
+ "private": true,
+ "scripts": {
+  "preinstall": "yarn frontend:install",
+  "frontend:install": "cd packages/frontend && yarn install",
+  "frontend:dev": "cd packages/frontend && yarn dev"
+ },
+ "packageManager": "yarn@3.2.1",
+ "dependencies": {},
+ "devDependencies": {}
+}
