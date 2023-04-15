@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@font-face {
+  font-family: "Inria Sans";
+  src: url("../public/fonts/InriaSans-Regular.ttf");
+  font-weight: 400;
+}
+
+@font-face {
+  font-family: "Inria Sans";
+  src: url("../public/fonts/InriaSans-Bold.ttf");
+  font-weight: bold;
+}
