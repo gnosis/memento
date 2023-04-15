@@ -16,17 +16,13 @@ interface IWithOwners {
 }
 
 contract Recovery is Module, Account {
+    error Unauthorized(address recoverer);
     error AlreadyProposed(
         address recoverer,
         address oldOwner,
         address newOwner
     );
     event Replace(address oldOwner, address newOwner);
-
-    struct Permit {
-        address signer;
-        bytes signature;
-    }
 
     struct Replacement {
         address oldOwner;
@@ -86,10 +82,10 @@ contract Recovery is Module, Account {
     }
 
     function recover(
-        address recoverer,
+        bytes calldata signature,
         Replacement[] calldata replacements
     ) public {
-        _requireFromEntryPoint();
+        address recoverer = _authorize(signature, replacements);
 
         for (uint256 i; i < replacements.length; i++) {
             address oldOwner = replacements[i].oldOwner;
@@ -109,6 +105,21 @@ contract Recovery is Module, Account {
             }
             progress[key] = counter;
         }
+    }
+
+    function _authorize(
+        bytes calldata signature,
+        Replacement[] calldata replacements
+    ) private view returns (address) {
+        bytes32 messageHash = ECDSA.toEthSignedMessageHash(
+            keccak256(abi.encode(replacements))
+        );
+
+        address signer = ECDSA.recover(messageHash, signature);
+        if (!recoverers[signer]) {
+            revert Unauthorized(signer);
+        }
+        return signer;
     }
 
     function _swapSigner(address oldOwner, address newOwner) private {
@@ -135,18 +146,5 @@ contract Recovery is Module, Account {
             }
             prevOwner = owner;
         }
-    }
-
-    uint256 public testCounter;
-
-    function setCounter(uint256 value) public {
-        _requireFromEntryPoint();
-        testCounter = value;
-    }
-
-    uint256 public testCounter2;
-
-    function setCounter2(uint256 value) public {
-        testCounter2 = value;
     }
 }

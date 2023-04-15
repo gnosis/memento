@@ -90,17 +90,13 @@ export interface RecoveryInterface extends utils.Interface {
     "owner()": FunctionFragment;
     "progress(bytes32)": FunctionFragment;
     "quorum()": FunctionFragment;
-    "recover(address,(address,address)[])": FunctionFragment;
+    "recover(bytes,(address,address)[])": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setAvatar(address)": FunctionFragment;
-    "setCounter(uint256)": FunctionFragment;
-    "setCounter2(uint256)": FunctionFragment;
     "setGuard(address)": FunctionFragment;
     "setTarget(address)": FunctionFragment;
     "setUp(bytes)": FunctionFragment;
     "target()": FunctionFragment;
-    "testCounter()": FunctionFragment;
-    "testCounter2()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "validateUserOp((address,uint256,bytes,bytes,uint256,uint256,uint256,uint256,uint256,bytes,bytes),bytes32,uint256)": FunctionFragment;
   };
@@ -119,14 +115,10 @@ export interface RecoveryInterface extends utils.Interface {
       | "recover"
       | "renounceOwnership"
       | "setAvatar"
-      | "setCounter"
-      | "setCounter2"
       | "setGuard"
       | "setTarget"
       | "setUp"
       | "target"
-      | "testCounter"
-      | "testCounter2"
       | "transferOwnership"
       | "validateUserOp"
   ): FunctionFragment;
@@ -151,7 +143,7 @@ export interface RecoveryInterface extends utils.Interface {
   encodeFunctionData(functionFragment: "quorum", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "recover",
-    values: [PromiseOrValue<string>, Recovery.ReplacementStruct[]]
+    values: [PromiseOrValue<BytesLike>, Recovery.ReplacementStruct[]]
   ): string;
   encodeFunctionData(
     functionFragment: "renounceOwnership",
@@ -160,14 +152,6 @@ export interface RecoveryInterface extends utils.Interface {
   encodeFunctionData(
     functionFragment: "setAvatar",
     values: [PromiseOrValue<string>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setCounter",
-    values: [PromiseOrValue<BigNumberish>]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "setCounter2",
-    values: [PromiseOrValue<BigNumberish>]
   ): string;
   encodeFunctionData(
     functionFragment: "setGuard",
@@ -182,14 +166,6 @@ export interface RecoveryInterface extends utils.Interface {
     values: [PromiseOrValue<BytesLike>]
   ): string;
   encodeFunctionData(functionFragment: "target", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "testCounter",
-    values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "testCounter2",
-    values?: undefined
-  ): string;
   encodeFunctionData(
     functionFragment: "transferOwnership",
     values: [PromiseOrValue<string>]
@@ -221,23 +197,10 @@ export interface RecoveryInterface extends utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "setAvatar", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "setCounter", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setCounter2",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "setGuard", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setTarget", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "setUp", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "target", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "testCounter",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "testCounter2",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(
     functionFragment: "transferOwnership",
     data: BytesLike
@@ -367,7 +330,7 @@ export interface Recovery extends BaseContract {
     quorum(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     recover(
-      recoverer: PromiseOrValue<string>,
+      signature: PromiseOrValue<BytesLike>,
       replacements: Recovery.ReplacementStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
@@ -378,16 +341,6 @@ export interface Recovery extends BaseContract {
 
     setAvatar(
       _avatar: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setCounter(
-      value: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<ContractTransaction>;
-
-    setCounter2(
-      value: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<ContractTransaction>;
 
@@ -407,10 +360,6 @@ export interface Recovery extends BaseContract {
     ): Promise<ContractTransaction>;
 
     target(overrides?: CallOverrides): Promise<[string]>;
-
-    testCounter(overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    testCounter2(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -451,7 +400,7 @@ export interface Recovery extends BaseContract {
   quorum(overrides?: CallOverrides): Promise<BigNumber>;
 
   recover(
-    recoverer: PromiseOrValue<string>,
+    signature: PromiseOrValue<BytesLike>,
     replacements: Recovery.ReplacementStruct[],
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
@@ -462,16 +411,6 @@ export interface Recovery extends BaseContract {
 
   setAvatar(
     _avatar: PromiseOrValue<string>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setCounter(
-    value: PromiseOrValue<BigNumberish>,
-    overrides?: Overrides & { from?: PromiseOrValue<string> }
-  ): Promise<ContractTransaction>;
-
-  setCounter2(
-    value: PromiseOrValue<BigNumberish>,
     overrides?: Overrides & { from?: PromiseOrValue<string> }
   ): Promise<ContractTransaction>;
 
@@ -491,10 +430,6 @@ export interface Recovery extends BaseContract {
   ): Promise<ContractTransaction>;
 
   target(overrides?: CallOverrides): Promise<string>;
-
-  testCounter(overrides?: CallOverrides): Promise<BigNumber>;
-
-  testCounter2(overrides?: CallOverrides): Promise<BigNumber>;
 
   transferOwnership(
     newOwner: PromiseOrValue<string>,
@@ -535,7 +470,7 @@ export interface Recovery extends BaseContract {
     quorum(overrides?: CallOverrides): Promise<BigNumber>;
 
     recover(
-      recoverer: PromiseOrValue<string>,
+      signature: PromiseOrValue<BytesLike>,
       replacements: Recovery.ReplacementStruct[],
       overrides?: CallOverrides
     ): Promise<void>;
@@ -544,16 +479,6 @@ export interface Recovery extends BaseContract {
 
     setAvatar(
       _avatar: PromiseOrValue<string>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setCounter(
-      value: PromiseOrValue<BigNumberish>,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setCounter2(
-      value: PromiseOrValue<BigNumberish>,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -573,10 +498,6 @@ export interface Recovery extends BaseContract {
     ): Promise<void>;
 
     target(overrides?: CallOverrides): Promise<string>;
-
-    testCounter(overrides?: CallOverrides): Promise<BigNumber>;
-
-    testCounter2(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -659,7 +580,7 @@ export interface Recovery extends BaseContract {
     quorum(overrides?: CallOverrides): Promise<BigNumber>;
 
     recover(
-      recoverer: PromiseOrValue<string>,
+      signature: PromiseOrValue<BytesLike>,
       replacements: Recovery.ReplacementStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
@@ -670,16 +591,6 @@ export interface Recovery extends BaseContract {
 
     setAvatar(
       _avatar: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setCounter(
-      value: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<BigNumber>;
-
-    setCounter2(
-      value: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<BigNumber>;
 
@@ -699,10 +610,6 @@ export interface Recovery extends BaseContract {
     ): Promise<BigNumber>;
 
     target(overrides?: CallOverrides): Promise<BigNumber>;
-
-    testCounter(overrides?: CallOverrides): Promise<BigNumber>;
-
-    testCounter2(overrides?: CallOverrides): Promise<BigNumber>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
@@ -744,7 +651,7 @@ export interface Recovery extends BaseContract {
     quorum(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     recover(
-      recoverer: PromiseOrValue<string>,
+      signature: PromiseOrValue<BytesLike>,
       replacements: Recovery.ReplacementStruct[],
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
@@ -755,16 +662,6 @@ export interface Recovery extends BaseContract {
 
     setAvatar(
       _avatar: PromiseOrValue<string>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setCounter(
-      value: PromiseOrValue<BigNumberish>,
-      overrides?: Overrides & { from?: PromiseOrValue<string> }
-    ): Promise<PopulatedTransaction>;
-
-    setCounter2(
-      value: PromiseOrValue<BigNumberish>,
       overrides?: Overrides & { from?: PromiseOrValue<string> }
     ): Promise<PopulatedTransaction>;
 
@@ -784,10 +681,6 @@ export interface Recovery extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     target(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    testCounter(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    testCounter2(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     transferOwnership(
       newOwner: PromiseOrValue<string>,
