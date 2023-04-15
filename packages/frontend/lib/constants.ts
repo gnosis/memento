@@ -9,6 +9,8 @@ export const getSafeTransactionService = (chainId: number) => {
   switch (chainId) {
     case 5:
       return "https://safe-transaction-goerli.safe.global/";
+    case 100:
+      return "https://safe-transaction-gnosis-chain.safe.global/"
   }
   return "";
 };
@@ -19,7 +21,7 @@ export const getJsonRpcProvider = (chainId: number) => {
     case 5:
       return new InfuraProvider("goerli", infuraKey);
     case 100:
-      return new JsonRpcProvider();
+      return new JsonRpcProvider("https://rpc.gnosis.gateway.fm/");
   }
   return undefined;
 };
