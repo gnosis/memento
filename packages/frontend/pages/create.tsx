@@ -4,7 +4,7 @@ import { deployRecoveryModule } from "@/lib/deploy";
 import useSafeAppsSDKWithProvider from "@/lib/useSafeAppsSDKWithProvider";
 import { createSigningKey } from "@/lib/signingKeys";
 
-const CreateForm = ({onSetupRecovery}) => {
+const CreateForm = ({ onSetupRecovery }) => {
   const { control, register, handleSubmit, watch } = useForm({
     defaultValues: {
       recoverycodes: [{ value: "" }, { value: "" }, { value: "" }],
@@ -21,7 +21,10 @@ const CreateForm = ({onSetupRecovery}) => {
   });
 
   const onSubmit = (data: any) => {
-    onSetupRecovery(data.recoverycodes.map((r) => r.value), data.quorum)
+    onSetupRecovery(
+      data.recoverycodes.map((r) => r.value),
+      data.quorum
+    );
   };
 
   return (
@@ -66,6 +69,7 @@ const CreateForm = ({onSetupRecovery}) => {
                 out of {fields.length} are required to recover the account
               </span>
             </div>
+            {/*
             <div className="flex items-center gap-1">
               <input
                 {...register("delayValue", {
@@ -89,7 +93,7 @@ const CreateForm = ({onSetupRecovery}) => {
               <span>
                 delay before the recovery is executed
               </span>
-            </div>
+            </div>*/}
             <div className="flex gap-2">
               <button
                 className="rounded bg-indigo-50 px-2 py-1 text-sm font-semibold text-indigo-600 shadow-sm hover:bg-indigo-100"
@@ -109,20 +113,28 @@ const CreateForm = ({onSetupRecovery}) => {
       </div>
     </>
   );
-}
+};
 
 export default function Create() {
-  const {connected, safe, provider, sdk} = useSafeAppsSDKWithProvider()
+  const { connected, safe, provider, sdk } = useSafeAppsSDKWithProvider();
 
   const setupRecovery = async (mementos: string[], quorum: number) => {
-    const { chainId, safeAddress } = safe
-    const recovererAddresses = mementos.map((memento) => createSigningKey(memento).address)
-    const deployTx = deployRecoveryModule(provider, safeAddress, chainId, recovererAddresses, quorum)
-    await sdk.txs.send({ txs: deployTx })
-  }
+    const { chainId, safeAddress } = safe;
+    const recovererAddresses = mementos.map(
+      (memento) => createSigningKey(memento).address
+    );
+    const deployTx = deployRecoveryModule(
+      provider,
+      safeAddress,
+      chainId,
+      recovererAddresses,
+      quorum
+    );
+    await sdk.txs.send({ txs: deployTx });
+  };
 
   if (!connected) {
-    return <div>Loading...</div>
+    return <div>Loading...</div>;
   }
 
   return (
