@@ -29,9 +29,9 @@ export const getJsonRpcProvider = (chainId: number) => {
 export const getRecoveryModuleMasterCopyAddress = (chainId: number) => {
   switch (chainId) {
     case 5:
-      return "0xDBfd7b8df01e269690352DAb698d262880C0D6eE";
+      return "0x38dE826A6bfC0e4be8B838584aD28B73e0A930AB";
     case 100:
-      return "0xDBfd7b8df01e269690352DAb698d262880C0D6eE";
+      return "0x38dE826A6bfC0e4be8B838584aD28B73e0A930AB";
   }
   return "";
 };
