@@ -33,7 +33,7 @@ contract Recovery is Module, Account {
         address newOwner;
     }
 
-    uint256 private quorum;
+    uint256 public quorum;
 
     constructor(
         address avatar,
@@ -75,8 +75,8 @@ contract Recovery is Module, Account {
     }
 
     mapping(address => bool) private recoverers;
-    mapping(address => mapping(bytes32 => bool)) proposed;
-    mapping(bytes32 => uint256) progress;
+    mapping(address => mapping(bytes32 => bool)) private proposed;
+    mapping(bytes32 => uint256) public progress;
 
     function isValidSignature(
         bytes32 hash,
