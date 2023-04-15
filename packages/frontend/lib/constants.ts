@@ -1,7 +1,6 @@
 import { InfuraProvider, JsonRpcProvider } from "@ethersproject/providers";
 
-export const MODULE_PROXY_FACTORY_ADDRESS =
-  "0x000000000000aDdB49795b0f9bA5BC298cDda236";
+export const ENTRYPOINT_ADDRESS = "0x0576a174D229E3cFA37253523E645A78A0C91B57"
 
 export const DEFAULT_SALT =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
@@ -20,7 +19,7 @@ export const getJsonRpcProvider = (chainId: number) => {
     case 5:
       return new InfuraProvider("goerli", infuraKey);
   }
-  return null;
+  return undefined;
 };
 
 export const getRecoveryModuleMasterCopyAddress = (chainId: number) => {
@@ -254,9 +253,9 @@ export const RECOVERY_MODULE_MASTER_COPY_ABI = [
             type: "bytes",
           },
         ],
-        internalType: "struct Recovery.Permit[]",
-        name: "permits",
-        type: "tuple[]",
+        internalType: "struct Recovery.Permit",
+        name: "permit",
+        type: "tuple",
       },
       {
         components: [

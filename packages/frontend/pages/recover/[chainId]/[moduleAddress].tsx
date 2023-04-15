@@ -1,6 +1,13 @@
+import {
+  ENTRYPOINT_ADDRESS,
+  RECOVERY_MODULE_MASTER_COPY_ABI,
+  getJsonRpcProvider,
+} from "@/lib/constants";
+import { createSigningKey, sign } from "@/lib/signingKeys";
 import { useSafeOwners } from "@/lib/useSafeOwners";
 import { useZodiacAvatar } from "@/lib/useZodiacAvatar";
-import { PlusIcon } from "@heroicons/react/20/solid";
+import { DefaultsForUserOp, signUserOp } from "@/lib/userOp";
+import { Contract, Wallet } from "ethers";
 import { isAddress } from "ethers/lib/utils";
 import { useRouter } from "next/router";
 import { useForm } from "react-hook-form";
@@ -98,23 +105,95 @@ const CreateRecoveryProcess = ({
   );
 };
 
+const RecoveryMementoInput = ({
+  chainId,
+  moduleAddress,
+  oldAccount,
+  newAccount,
+}: {
+  chainId: number;
+  moduleAddress: string;
+  oldAccount: string;
+  newAccount: string;
+}) => {
+  const { register, handleSubmit } = useForm();
+
+  const handleRecover = async (memento: string) => {
+    const { signingKey, address } = createSigningKey(memento);
+    const signature = sign(signingKey, address);
+    const provider = getJsonRpcProvider(chainId);
+    const signer = new Wallet(signingKey, provider);
+    const contract = new Contract(
+      moduleAddress,
+      RECOVERY_MODULE_MASTER_COPY_ABI,
+      signer
+    );
+    const { data: callData } = await contract.populateTransaction.recover(
+      [address, signature],
+      [[oldAccount, newAccount]]
+    );
+    const userOp = {
+      ...DefaultsForUserOp,
+      callData: callData as string
+    }
+    const signedUserOp = await signUserOp(userOp, signer, ENTRYPOINT_ADDRESS, chainId);
+    console.log(signedUserOp)
+  };
+
+  const onSubmit = ({ memento }: { memento: string }) => handleRecover(memento);
+
+  return (
+    <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="w-full max-w-xl space-y-8"
+      >
+        <div className="flex flex-col gap-2">
+          <label className="block text-sm font-medium leading-6 text-gray-900">
+            Recovery memento
+          </label>
+          <input
+            {...register("memento")}
+            type="text"
+            className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+            placeholder="MySecretMemento"
+          />
+        </div>
+        <div>
+          <button
+            type="submit"
+            className="rounded bg-indigo-600 px-2 py-1 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Recover
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
+
 const RecoveryPage = () => {
   const { query } = useRouter();
 
   const chainId = parseInt(query.chainId as string);
   const moduleAddress = query.moduleAddress as string;
-  const oldOwner = query.oldOwner as string;
-  const newOwner = query.newOwner as string;
+  const oldOwner = query.oldAccount as string;
+  const newOwner = query.newAccount as string;
 
   if (!oldOwner || !newOwner) {
     return (
-      <CreateRecoveryProcess
-        chainId={chainId as number}
-        moduleAddress={moduleAddress}
-      />
+      <CreateRecoveryProcess chainId={chainId} moduleAddress={moduleAddress} />
     );
   }
-  return <></>;
+
+  return (
+    <RecoveryMementoInput
+      chainId={chainId}
+      moduleAddress={moduleAddress}
+      oldAccount={oldOwner}
+      newAccount={newOwner}
+    />
+  );
 };
 
 export default RecoveryPage;

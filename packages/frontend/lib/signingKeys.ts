@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { SigningKey, computeAddress } from "ethers/lib/utils";
+import { SigningKey, computeAddress, keccak256 } from "ethers/lib/utils";
 
 export const createSigningKey = (phrase: string) => {
   const signingKey = new SigningKey(
@@ -9,6 +9,9 @@ export const createSigningKey = (phrase: string) => {
   return { signingKey, address: computeAddress(signingKey.publicKey) };
 }
 
-export const signWithKey = (signingKey: SigningKey, message: string) => {
-  return signingKey.signDigest(ethers.utils.keccak256(message));
+export const sign = (sk: SigningKey, msg: string) => {
+  const message = ethers.utils.arrayify(keccak256(msg));
+  return ethers.utils.joinSignature(
+    sk.signDigest(ethers.utils.hashMessage(message))
+  );
 }
