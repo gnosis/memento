@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "build": "hardhat compile",
+    "build": "hardhat compile && cp -r ./typechain-types ../frontend",
     "deploy": "hardhat deploy --network",
     "verify": "hardhat verify --network",
     "test": "hardhat test"
