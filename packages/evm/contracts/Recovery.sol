@@ -136,4 +136,17 @@ contract Recovery is Module, Account {
             prevOwner = owner;
         }
     }
+
+    uint256 public testCounter;
+
+    function setCounter(uint256 value) public {
+        _requireFromEntryPoint();
+        testCounter = value;
+    }
+
+    uint256 public testCounter2;
+
+    function setCounter2(uint256 value) public {
+        testCounter2 = value;
+    }
 }

@@ -8,6 +8,8 @@ import "@account-abstraction/contracts/core/BaseAccount.sol";
  * @dev This contract provides the basic logic for implementing the ERC4337 IAccount interface
  */
 abstract contract Account is BaseAccount {
+    receive() external payable {}
+
     // magic value indicating successfull EIP1271 signature validation.
     bytes4 private constant EIP1271_MAGICVALUE = 0x1626ba7e;
 
