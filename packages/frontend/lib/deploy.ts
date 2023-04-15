@@ -1,4 +1,4 @@
-import { Contract, ethers } from "ethers";
+import { BigNumber, Contract, ethers } from "ethers";
 import { deployAndSetUpCustomModule } from "@gnosis.pm/zodiac";
 import { abi as SafeAbi } from "@safe-global/safe-deployments/dist/assets/v1.3.0/gnosis_safe_l2.json";
 import { Interface } from "ethers/lib/utils";
@@ -38,6 +38,20 @@ export function enableModule(safeAddress: string, module: string) {
   ]);
 }
 
+const fundModule = (safeAddress: string, module: string, value: BigNumber) => {
+  return {to: module, value: value.toString(), data: "0x"};
+};
+
+const fundingAmount = (chainId: number) => {
+  switch (chainId) {
+    case 5:
+      return BigNumber.from("10000000000000000");
+    case 100:
+      return BigNumber.from("500000000000000000");
+  }
+  throw new Error("Unsupported chainId");
+};
+
 export function deployRecoveryModule(
   provider: JsonRpcProvider,
   safeAddress: string,
@@ -45,8 +59,8 @@ export function deployRecoveryModule(
   recoverers: string[],
   quorum: number
 ) {
-  console.log(safeAddress, chainId, recoverers, quorum)
-  console.log(getRecoveryModuleMasterCopyAddress(chainId))
+  console.log(safeAddress, chainId, recoverers, quorum);
+  console.log(getRecoveryModuleMasterCopyAddress(chainId));
   const { transaction, expectedModuleAddress } = deployAndSetUpCustomModule(
     getRecoveryModuleMasterCopyAddress(chainId),
     RECOVERY_MODULE_MASTER_COPY_ABI,
@@ -62,6 +76,11 @@ export function deployRecoveryModule(
     safeAddress,
     expectedModuleAddress
   );
+  const fundModuleTransaction = fundModule(
+    safeAddress,
+    expectedModuleAddress,
+    fundingAmount(chainId)
+  );
 
   return [
     {
@@ -69,5 +88,6 @@ export function deployRecoveryModule(
       value: transaction.value.toString(),
     },
     enableRecoveryModuleTransaction,
+    fundModuleTransaction,
   ];
 }
