@@ -8,3 +8,7 @@ export const createSigningKey = (phrase: string) => {
 
   return { signingKey, address: computeAddress(signingKey.publicKey) };
 }
+
+export const signWithKey = (signingKey: SigningKey, message: string) => {
+  return signingKey.signDigest(ethers.utils.keccak256(message));
+}

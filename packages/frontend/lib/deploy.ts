@@ -4,7 +4,7 @@ import { abi as SafeAbi } from "@safe-global/safe-deployments/dist/assets/v1.3.0
 import { Interface } from "ethers/lib/utils";
 import {
   RECOVERY_MODULE_MASTER_COPY_ABI,
-  RECOVERY_MODULE_MASTER_COPY_ADDRESSES,
+  getRecoveryModuleMasterCopyAddress,
 } from "./constants";
 
 export const AddressOne = "0x0000000000000000000000000000000000000001";
@@ -46,9 +46,9 @@ export function deployRecoveryModule(
   quorum: number
 ) {
   console.log(safeAddress, chainId, recoverers, quorum)
-  console.log(RECOVERY_MODULE_MASTER_COPY_ADDRESSES(chainId))
+  console.log(getRecoveryModuleMasterCopyAddress(chainId))
   const { transaction, expectedModuleAddress } = deployAndSetUpCustomModule(
-    RECOVERY_MODULE_MASTER_COPY_ADDRESSES(chainId),
+    getRecoveryModuleMasterCopyAddress(chainId),
     RECOVERY_MODULE_MASTER_COPY_ABI,
     {
       values: [safeAddress, safeAddress, recoverers, quorum],
