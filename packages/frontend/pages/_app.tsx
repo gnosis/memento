@@ -1,9 +1,16 @@
 import "@/styles/globals.css";
+import React from "react";
 import type { AppProps } from "next/app";
 import SafeProvider from "@safe-global/safe-apps-react-sdk";
-import React from "react";
+import useIsMounted from "@/lib/useIsMounted";
 
 export default function App({ Component, pageProps }: AppProps) {
+  const isMounted = useIsMounted()
+
+  if (!isMounted) {
+    return <></>
+  }
+
   return (
     <React.StrictMode>
       <SafeProvider>

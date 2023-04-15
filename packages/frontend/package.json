@@ -9,8 +9,11 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@gnosis.pm/zodiac": "^3.2.2",
     "@heroicons/react": "^2.0.17",
+    "@safe-global/safe-apps-provider": "^0.16.0",
     "@safe-global/safe-apps-react-sdk": "^4.6.4",
+    "@safe-global/safe-deployments": "^1.22.0",
     "@tailwindcss/forms": "^0.5.3",
     "@types/node": "18.15.11",
     "@types/react": "18.0.35",

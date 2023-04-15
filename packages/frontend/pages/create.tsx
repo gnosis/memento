@@ -1,7 +1,10 @@
 import { useForm, useFieldArray } from "react-hook-form";
 import { TrashIcon } from "@heroicons/react/20/solid";
+import { deployRecoveryModule } from "@/lib/deploy";
+import useSafeAppsSDKWithProvider from "@/lib/useSafeAppsSDKWithProvider";
+import { createSigningKey } from "@/lib/signingKeys";
 
-export default function Home() {
+const CreateForm = ({onSetupRecovery}) => {
   const { control, register, handleSubmit, watch } = useForm({
     defaultValues: {
       recoverycodes: [{ value: "" }, { value: "" }, { value: "" }],
@@ -12,11 +15,14 @@ export default function Home() {
   });
   const delayValue = watch("delayValue");
   const delayPlural = delayValue > 1;
-  const onSubmit = (data: any) => console.log(data);
   const { fields, append, remove } = useFieldArray({
     control,
     name: "recoverycodes",
   });
+
+  const onSubmit = (data: any) => {
+    onSetupRecovery(data.recoverycodes.map((r) => r.value), data.quorum)
+  };
 
   return (
     <>
@@ -101,6 +107,27 @@ export default function Home() {
           </form>
         </div>
       </div>
+    </>
+  );
+}
+
+export default function Create() {
+  const {connected, safe, provider, sdk} = useSafeAppsSDKWithProvider()
+
+  const setupRecovery = async (mementos: string[], quorum: number) => {
+    const { chainId, safeAddress } = safe
+    const recovererAddresses = mementos.map((memento) => createSigningKey(memento).address)
+    const deployTx = deployRecoveryModule(provider, safeAddress, chainId, recovererAddresses, quorum)
+    await sdk.txs.send({ txs: deployTx })
+  }
+
+  if (!connected) {
+    return <div>Loading...</div>
+  }
+
+  return (
+    <>
+      <CreateForm onSetupRecovery={setupRecovery} />
     </>
   );
 }
