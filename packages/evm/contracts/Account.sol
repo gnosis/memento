@@ -20,7 +20,7 @@ abstract contract Account is BaseAccount {
      * @dev Hard-code the ERC4337 entry point contract address for gas efficiency
      */
     IEntryPoint private constant _entryPoint =
-        IEntryPoint(0x0576a174D229E3cFA37253523E645A78A0C91B57);
+        IEntryPoint(0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789);
 
     /// @inheritdoc BaseAccount
     function nonce() public view virtual override returns (uint256) {
