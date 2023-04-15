@@ -1,4 +1,5 @@
 import { recoveryABI } from "@/generated";
+import { bundle } from "@/lib/bowserBundler";
 import {
   ENTRYPOINT_ADDRESS,
   RECOVERY_MODULE_MASTER_COPY_ABI,
@@ -123,12 +124,11 @@ const RecoveryMementoInput = ({
 
   const handleRecover = async (memento: string) => {
     const { signingKey, address } = createSigningKey(memento);
-    const signature = sign(signingKey, address);
     const provider = getJsonRpcProvider(chainId);
     const signer = new Wallet(signingKey, provider);
     const contract = new Contract(moduleAddress, recoveryABI, signer);
     const { data: callData } = await contract.populateTransaction.recover(
-      [address, signature],
+      address,
       [[oldAccount, newAccount]]
     );
     const userOp = {
