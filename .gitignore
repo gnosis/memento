@@ -36,3 +36,4 @@ next-env.d.ts
 .env
 packages/evm/artifacts/
 packages/evm/cache
+packages/evm/typechain-types
