@@ -142,6 +142,10 @@ const RecoveryMementoInput = ({
       chainId
     );
     console.log(signedUserOp);
+
+    if (provider == null) throw new Error("Provider is null");
+    const result = await bundle(provider, userOp);
+    console.log(result);
   };
 
   const onSubmit = ({ memento }: { memento: string }) => handleRecover(memento);
