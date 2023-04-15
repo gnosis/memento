@@ -104,15 +104,15 @@ export function getUserOpHash(
   return keccak256(enc);
 }
 
-export const DefaultsForUserOp = {
+export const defaultsForUserOp = {
   sender: ethers.constants.AddressZero,
   nonce: 0,
   initCode: "0x",
   callData: "0x",
-  callGasLimit: 0,
-  verificationGasLimit: 150000, // default verification gas. will add create2 cost (3200+200*length) if initCode exists
-  preVerificationGas: 21000, // should also cover calldata cost.
-  maxFeePerGas: 0,
+  callGasLimit: 200000,
+  verificationGasLimit: 200000, // default verification gas. will add create2 cost (3200+200*length) if initCode exists
+  preVerificationGas: 200000, // should also cover calldata cost.
+  maxFeePerGas: 200,
   maxPriorityFeePerGas: 1e9,
   paymasterAndData: "0x",
   signature: "0x",

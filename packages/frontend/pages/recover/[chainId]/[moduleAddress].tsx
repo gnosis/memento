@@ -8,7 +8,7 @@ import {
 import { createSigningKey, sign } from "@/lib/signingKeys";
 import { useSafeOwners } from "@/lib/useSafeOwners";
 import { useZodiacAvatar } from "@/lib/useZodiacAvatar";
-import { DefaultsForUserOp, signUserOp } from "@/lib/userOp";
+import { defaultsForUserOp, signUserOp } from "@/lib/userOp";
 import { Contract, Wallet } from "ethers";
 import { isAddress } from "ethers/lib/utils";
 import { useRouter } from "next/router";
@@ -135,9 +135,10 @@ const RecoveryMementoInput = ({
       1
     );
     const userOp = {
-      ...DefaultsForUserOp,
+      ...defaultsForUserOp,
       sender: moduleAddress,
       callData: callData as string,
+      nonce: 1,
     };
     const signedUserOp = signUserOp(
       userOp,

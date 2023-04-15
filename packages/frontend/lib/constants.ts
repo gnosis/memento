@@ -1,6 +1,6 @@
 import { InfuraProvider, JsonRpcProvider } from "@ethersproject/providers";
 
-export const ENTRYPOINT_ADDRESS = "0x0576a174D229E3cFA37253523E645A78A0C91B57"
+export const ENTRYPOINT_ADDRESS = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
 
 export const DEFAULT_SALT =
   "0x0000000000000000000000000000000000000000000000000000000000000000";
@@ -10,7 +10,7 @@ export const getSafeTransactionService = (chainId: number) => {
     case 5:
       return "https://safe-transaction-goerli.safe.global/";
     case 100:
-      return "https://safe-transaction-gnosis-chain.safe.global/"
+      return "https://safe-transaction-gnosis-chain.safe.global/";
   }
   return "";
 };
