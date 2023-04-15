@@ -85,6 +85,7 @@ const CreateRecoveryProcess = ({
                     Share the following link with the people with the recovery
                     mementos
                   </p>
+                  {/*
                   <p className="text-sm md:ml-6 md:mt-0">
                     <button
                       onClick={copyRecoveryUrl}
@@ -93,6 +94,7 @@ const CreateRecoveryProcess = ({
                       Copy
                     </button>
                   </p>
+                  */}
                 </div>
                 <div className="mx-3 flex-1 md:flex md:justify-between font-mono break-all">
                   <p className="text-xs text-blue-700">{recoveryUrl}</p>
@@ -124,21 +126,22 @@ const RecoveryMementoInput = ({
     const signature = sign(signingKey, address);
     const provider = getJsonRpcProvider(chainId);
     const signer = new Wallet(signingKey, provider);
-    const contract = new Contract(
-      moduleAddress,
-      recoveryABI,
-      signer
-    );
+    const contract = new Contract(moduleAddress, recoveryABI, signer);
     const { data: callData } = await contract.populateTransaction.recover(
       [address, signature],
       [[oldAccount, newAccount]]
     );
     const userOp = {
       ...DefaultsForUserOp,
-      callData: callData as string
-    }
-    const signedUserOp = await signUserOp(userOp, signer, ENTRYPOINT_ADDRESS, chainId);
-    console.log(signedUserOp)
+      callData: callData as string,
+    };
+    const signedUserOp = await signUserOp(
+      userOp,
+      signer,
+      ENTRYPOINT_ADDRESS,
+      chainId
+    );
+    console.log(signedUserOp);
   };
 
   const onSubmit = ({ memento }: { memento: string }) => handleRecover(memento);

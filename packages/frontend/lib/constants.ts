@@ -18,6 +18,8 @@ export const getJsonRpcProvider = (chainId: number) => {
   switch (chainId) {
     case 5:
       return new InfuraProvider("goerli", infuraKey);
+    case 100:
+      return new JsonRpcProvider();
   }
   return undefined;
 };
@@ -25,7 +27,9 @@ export const getJsonRpcProvider = (chainId: number) => {
 export const getRecoveryModuleMasterCopyAddress = (chainId: number) => {
   switch (chainId) {
     case 5:
-      return "0x7c1C338D11f79cA170AD012A7Bbc177D07a25A33";
+      return "0xDBfd7b8df01e269690352DAb698d262880C0D6eE";
+    case 100:
+      return "0xDBfd7b8df01e269690352DAb698d262880C0D6eE";
   }
   return "";
 };

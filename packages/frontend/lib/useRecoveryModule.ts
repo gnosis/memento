@@ -1,33 +1,35 @@
 import { useEffect, useState } from "react";
-import { RECOVERY_MODULE_MASTER_COPY_ABI, getJsonRpcProvider } from "./constants";
+import { getJsonRpcProvider } from "./constants";
 import { Contract } from "ethers";
+import { recoveryABI } from "@/generated";
 
-export const useZodiacAvatar = (
+export const useRecoveryModuleQuorum = (
   chainId: number,
   moduleAddress: string
-): {avatar: string | null, isLoading: boolean} => {
-  const [avatar, setAvatar] = useState<string | null>(null);
+): {quorum: string | null, isLoading: boolean} => {
+  const [quorum, setQuorum] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const provider = getJsonRpcProvider(chainId);
 
   useEffect(() => {
     if (!moduleAddress || !provider) return;
-    const fetchAvatar = async () => {
+    const fetchQuorum = async () => {
       setIsLoading(true);
       try {
         const contract = new Contract(
           moduleAddress,
-          RECOVERY_MODULE_MASTER_COPY_ABI,
+          recoveryABI,
           provider
         );
-        setAvatar(await contract.avatar());
+        setQuorum((await contract.quorum()).toString());
       } catch (e) {
-        setAvatar(null);
+        setQuorum(null);
+        console.log(e)
       }
       setIsLoading(false);
     };
-    fetchAvatar();
+    fetchQuorum();
   }, [moduleAddress]);
 
-  return {avatar, isLoading};
+  return {quorum, isLoading};
 };
