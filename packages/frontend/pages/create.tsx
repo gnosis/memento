@@ -134,7 +134,7 @@ export default function Create() {
       recovererAddresses,
       quorum
     );
-    await sdk.txs.send({ txs: deployTx });
+    console.log(await sdk.txs.send({ txs: deployTx }));
   };
 
   if (!connected) {
