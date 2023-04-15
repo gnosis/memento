@@ -31,7 +31,6 @@ contract Recovery is Module {
     }
 
     uint256 private quorum;
-    mapping(address => bool) private recoverers;
 
     constructor(
         address avatar,
@@ -72,27 +71,27 @@ contract Recovery is Module {
         }
     }
 
+    mapping(address => bool) private recoverers;
+    mapping(bytes32 => uint256) progress;
+
     function recover(
-        Permit[] calldata permits,
+        Permit calldata permit,
         Replacement[] calldata replacements
     ) public {
-        uint256 count;
-        for (uint256 i; i < permits.length; ++i) {
-            Permit calldata permit = permits[i];
-            _validate(permit);
+        _validate(permit);
+        delete recoverers[permit.signer];
 
-            ++count;
-            delete recoverers[permit.signer];
-        }
+        for (uint256 i; i < replacements.length; i++) {
+            address oldOwner = replacements[i].oldOwner;
+            address newOwner = replacements[i].newOwner;
+            bytes32 key = keccak256(abi.encode(oldOwner, newOwner));
 
-        if (count < quorum) {
-            revert NoQuorum();
-        }
-
-        for (uint256 i; i < replacements.length; ++i) {
-            Replacement memory replacement = replacements[i];
-            _swapSigner(replacement.oldOwner, replacement.newOwner);
-            emit Replace(replacement.oldOwner, replacement.newOwner);
+            uint256 counter = progress[key] + 1;
+            if (counter == quorum) {
+                _swapSigner(oldOwner, newOwner);
+                emit Replace(oldOwner, newOwner);
+            }
+            progress[key] = counter;
         }
     }
 
