@@ -127,16 +127,19 @@ const RecoveryMementoInput = ({
     const provider = getJsonRpcProvider(chainId);
     const signer = new Wallet(signingKey, provider);
     const contract = new Contract(moduleAddress, recoveryABI, signer);
-    const { data: callData } = await contract.populateTransaction.recover(
-      address,
-      [[oldAccount, newAccount]]
+    // const { data: callData } = await contract.populateTransaction.recover(
+    //   address,
+    //   [[oldAccount, newAccount]]
+    // );
+    const { data: callData } = await contract.populateTransaction.setCounter2(
+      1
     );
     const userOp = {
       ...DefaultsForUserOp,
       sender: moduleAddress,
       callData: callData as string,
     };
-    const signedUserOp = await signUserOp(
+    const signedUserOp = signUserOp(
       userOp,
       signer,
       ENTRYPOINT_ADDRESS,
@@ -145,7 +148,7 @@ const RecoveryMementoInput = ({
     console.log(signedUserOp);
 
     if (provider == null) throw new Error("Provider is null");
-    const result = await bundle(provider, userOp);
+    const result = await bundle(provider, signedUserOp);
     console.log(result);
   };
 
