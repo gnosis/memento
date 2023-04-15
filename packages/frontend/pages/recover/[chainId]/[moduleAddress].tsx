@@ -1,3 +1,4 @@
+import { recoveryABI } from "@/generated";
 import {
   ENTRYPOINT_ADDRESS,
   RECOVERY_MODULE_MASTER_COPY_ABI,
@@ -125,7 +126,7 @@ const RecoveryMementoInput = ({
     const signer = new Wallet(signingKey, provider);
     const contract = new Contract(
       moduleAddress,
-      RECOVERY_MODULE_MASTER_COPY_ABI,
+      recoveryABI,
       signer
     );
     const { data: callData } = await contract.populateTransaction.recover(
@@ -146,7 +147,7 @@ const RecoveryMementoInput = ({
     <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="w-full max-w-xl space-y-8"
+        className="w-full max-w-2xl space-y-8"
       >
         <div className="flex flex-col gap-2">
           <label className="block text-sm font-medium leading-6 text-gray-900">

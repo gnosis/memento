@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { getSafeTransactionService } from "./constants";
 
-export const useSafeOwners = (
+export const useSafeModules = (
   chainId: number | null | undefined,
   safeAddress: string | null | undefined
-): { owners: string[] | null; isLoading: boolean } => {
-  const [owners, setOwners] = useState<string[] | null>(null);
+): { modules: string[] | null; isLoading: boolean } => {
+  const [modules, setModules] = useState<string[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
@@ -17,14 +17,14 @@ export const useSafeOwners = (
           `${getSafeTransactionService(chainId)}/api/v1/safes/${safeAddress}`
         );
         const body = await response.json();
-        setOwners(body.owners);
+        setModules(body.modules);
       } catch (e) {
-        setOwners(null);
+        setModules(null);
       }
       setIsLoading(false);
     };
     fetchOwners();
   }, [safeAddress]);
 
-  return { owners, isLoading };
+  return { modules, isLoading };
 };
