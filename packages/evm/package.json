@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/gnosis/cow-order-wrapper#readme",
   "devDependencies": {
+    "@account-abstraction/contracts": "^0.5.0",
     "@ethersproject/abi": "^5.7.0",
     "@ethersproject/providers": "^5.7.2",
     "@gnosis.pm/zodiac": "^3.0.0",

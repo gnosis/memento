@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: LGPL-3.0-only
 pragma solidity ^0.8.9;
 
+import "./Account.sol";
 import "@gnosis.pm/zodiac/contracts/core/Module.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
@@ -14,10 +15,12 @@ interface IWithOwners {
     ) external;
 }
 
-contract Recovery is Module {
-    error InvalidRecoverer(address);
-    error NoQuorum();
-
+contract Recovery is Module, Account {
+    error AlreadyProposed(
+        address recoverer,
+        address oldOwner,
+        address newOwner
+    );
     event Replace(address oldOwner, address newOwner);
 
     struct Permit {
@@ -72,19 +75,32 @@ contract Recovery is Module {
     }
 
     mapping(address => bool) private recoverers;
+    mapping(address => mapping(bytes32 => bool)) proposed;
     mapping(bytes32 => uint256) progress;
 
+    function isValidSignature(
+        bytes32 hash,
+        bytes memory signature
+    ) public view override returns (bool) {
+        return recoverers[ECDSA.recover(hash, signature)] == true;
+    }
+
     function recover(
-        Permit calldata permit,
+        address recoverer,
         Replacement[] calldata replacements
     ) public {
-        _validate(permit);
-        delete recoverers[permit.signer];
+        _requireFromEntryPoint();
 
         for (uint256 i; i < replacements.length; i++) {
             address oldOwner = replacements[i].oldOwner;
             address newOwner = replacements[i].newOwner;
             bytes32 key = keccak256(abi.encode(oldOwner, newOwner));
+
+            if (proposed[recoverer][key]) {
+                revert AlreadyProposed(recoverer, oldOwner, newOwner);
+            } else {
+                proposed[recoverer][key] = true;
+            }
 
             uint256 counter = progress[key] + 1;
             if (counter == quorum) {
@@ -92,20 +108,6 @@ contract Recovery is Module {
                 emit Replace(oldOwner, newOwner);
             }
             progress[key] = counter;
-        }
-    }
-
-    function _validate(Permit calldata permit) private view {
-        if (!recoverers[permit.signer]) {
-            revert InvalidRecoverer(permit.signer);
-        }
-
-        bytes32 messageHash = ECDSA.toEthSignedMessageHash(
-            keccak256(abi.encodePacked(permit.signer))
-        );
-
-        if (permit.signer != ECDSA.recover(messageHash, permit.signature)) {
-            revert InvalidRecoverer(permit.signer);
         }
     }
 
