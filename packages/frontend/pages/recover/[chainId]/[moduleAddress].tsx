@@ -149,7 +149,7 @@ const RecoveryMementoInput = ({
     console.log(result);
   };
 
-  const onSubmit = ({ memento }: { memento: string }) => handleRecover(memento);
+  const onSubmit = (data: any) => handleRecover(data.memento);
 
   return (
     <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">

@@ -4,7 +4,11 @@ import { deployRecoveryModule } from "@/lib/deploy";
 import useSafeAppsSDKWithProvider from "@/lib/useSafeAppsSDKWithProvider";
 import { createSigningKey } from "@/lib/signingKeys";
 
-const CreateForm = ({ onSetupRecovery }) => {
+const CreateForm = ({
+  onSetupRecovery,
+}: {
+  onSetupRecovery: (codes: string[], quorum: number) => void;
+}) => {
   const { control, register, handleSubmit, watch } = useForm({
     defaultValues: {
       recoverycodes: [{ value: "" }, { value: "" }, { value: "" }],
@@ -22,7 +26,7 @@ const CreateForm = ({ onSetupRecovery }) => {
 
   const onSubmit = (data: any) => {
     onSetupRecovery(
-      data.recoverycodes.map((r) => r.value),
+      data.recoverycodes.map((r: any) => r.value),
       data.quorum
     );
   };
