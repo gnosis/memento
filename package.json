@@ -5,9 +5,13 @@
  "license": "MIT",
  "private": true,
  "scripts": {
-  "preinstall": "yarn frontend:install",
+  "preinstall": "yarn frontend:install && yarn evm:install",
+  "build": "yarn evm:build && yarn frontend:build",
+  "evm:install": "cd packages/evm && yarn install",
+  "evm:build": "cd packages/evm && yarn build",
   "frontend:install": "cd packages/frontend && yarn install",
-  "frontend:dev": "cd packages/frontend && yarn dev"
+  "frontend:dev": "cd packages/frontend && yarn dev",
+  "frontend:build": "cd packages/frontend && yarn generate && yarn build"
  },
  "packageManager": "yarn@3.2.1",
  "dependencies": {},
