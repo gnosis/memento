@@ -133,6 +133,7 @@ const RecoveryMementoInput = ({
     );
     const userOp = {
       ...DefaultsForUserOp,
+      sender: moduleAddress,
       callData: callData as string,
     };
     const signedUserOp = await signUserOp(
