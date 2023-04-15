@@ -1,7 +1,9 @@
 import { useSafeOwners } from "@/lib/useSafeOwners";
 import { useZodiacAvatar } from "@/lib/useZodiacAvatar";
 import { PlusIcon } from "@heroicons/react/20/solid";
+import { isAddress } from "ethers/lib/utils";
 import { useRouter } from "next/router";
+import { useForm } from "react-hook-form";
 
 const CreateRecoveryProcess = ({
   chainId,
@@ -18,44 +20,81 @@ const CreateRecoveryProcess = ({
     chainId,
     safeAddress
   );
+  const {
+    register,
+    watch,
+    formState: { isValid },
+  } = useForm({});
 
   if (isSafeLoading || isOwnersLoading) return <>Loading</>;
-
   if (!owners) return <></>;
 
+  const { oldAccount, newAccount } = watch();
+
+  const recoveryUrl = `${window.location}/?oldAccount=${oldAccount}&newAccount=${newAccount}`;
+  const copyRecoveryUrl = () => navigator.clipboard.writeText(recoveryUrl);
+
   return (
-    <div className="mx-auto max-w-lg">
-      <div className="mt-10">
-        <h3 className="text-sm font-medium text-gray-500">Recovery process for {safeAddress}</h3>
-        <ul
-          role="list"
-          className="mt-4 divide-y divide-gray-200 border-b border-t border-gray-200"
-        >
-          {owners.map((owner, index) => (
-            <li
-              key={index}
-              className="flex items-center justify-between space-x-3 py-4"
+    <>
+      <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
+        <div className="w-full max-w-xl space-y-8">
+          <h2>Start recovery for {safeAddress}</h2>
+          <div className="flex flex-col gap-2">
+            <label className="block text-sm font-medium leading-6 text-gray-900">
+              Old account to recover from
+            </label>
+            <select
+              {...register("oldAccount", {
+                required: true,
+                validate: (value) => isAddress(value),
+              })}
+              className="block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >
-              <div className="flex min-w-0 flex-1 items-center space-x-3">
-                <div className="min-w-0 flex-1">
-                  <p className="truncate text-sm font-medium text-gray-900">
-                    {owner}
+              {owners.map((owner) => (
+                <option>{owner}</option>
+              ))}
+            </select>
+          </div>
+          <div className="flex flex-col gap-2">
+            <label className="block text-sm font-medium leading-6 text-gray-900">
+              New account to recover to
+            </label>
+            <input
+              {...register("newAccount", {
+                required: true,
+                validate: (value) => isAddress(value),
+              })}
+              type="text"
+              className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              placeholder="0x4aD6D9861f9569dc929B6e8F33A73bCA16ca0d91"
+            />
+          </div>
+          {isValid && (
+            <div className="rounded-md bg-blue-50 p-4">
+              <div className="flex flex-col gap-3">
+                <div className="mx-3 flex-1 md:flex md:justify-between">
+                  <p className="text-sm text-blue-700">
+                    Share the following link with the people with the recovery
+                    mementos
+                  </p>
+                  <p className="text-sm md:ml-6 md:mt-0">
+                    <button
+                      onClick={copyRecoveryUrl}
+                      className="whitespace-nowrap font-medium text-blue-700 hover:text-blue-600"
+                    >
+                      Copy
+                    </button>
                   </p>
                 </div>
+                <div className="mx-3 flex-1 md:flex md:justify-between font-mono break-all">
+                  <p className="text-xs text-blue-700">{recoveryUrl}</p>
+                </div>
               </div>
-              <div className="flex-shrink-0">
-                <button
-                  type="button"
-                  className="inline-flex items-center gap-x-1.5 text-sm font-semibold leading-6 text-gray-900"
-                >
-                  Start recovery
-                </button>
-              </div>
-            </li>
-          ))}
-        </ul>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

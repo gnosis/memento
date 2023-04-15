@@ -27,7 +27,7 @@ const CreateForm = ({onSetupRecovery}) => {
   return (
     <>
       <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
-        <div className="w-full max-w-lg space-y-8">
+        <div className="w-full max-w-xl space-y-8">
           <form className="mt-8 space-y-4" onSubmit={handleSubmit(onSubmit)}>
             <h2>Setup your recovery codes</h2>
             {fields.map((field, index) => {
